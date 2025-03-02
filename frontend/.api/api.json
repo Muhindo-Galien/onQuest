@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "space-and-time",
+      "source": "@space-and-time/v1.0#9ftlahm6thxg0q",
+      "integrity": "sha512-RyRSP/rA3NiLUQiwiUqB4TocAQq7T3fINSXRAZBdEPo/J5UboiWk7PFUB5geGs8ARko/Phcjgi0B6ksMqNarzQ==",
+      "installerVersion": "6.1.3"
+    }
+  ]
+}

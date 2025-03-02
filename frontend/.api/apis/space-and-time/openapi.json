@@ -1,0 +1,4042 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Gateway (Secrets Proxy) Rest APIs",
+    "description": "Supports centralized secrets management",
+    "version": "0.1"
+  },
+  "servers": [
+    {
+      "url": "https://proxy.api.spaceandtime.dev",
+      "description": "The primary SxT Gateway (Secrets Proxy) url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Gateway Authentication APIs",
+      "description": "Enables user authentication and registration"
+    },
+    {
+      "name": "Gateway Biscuit APIs",
+      "description": "Enables biscuit retrieval"
+    },
+    {
+      "name": "Gateway Permission APIs",
+      "description": "Enables permission management"
+    },
+    {
+      "name": "Gateway API Key APIs",
+      "description": "Enables API Key management"
+    },
+    {
+      "name": "Gateway SQL Proxy APIs",
+      "description": "Gateway SQL Proxy APIs for interacting with the core SxT platform"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Gateway Authentication APIs"
+        ],
+        "summary": "Register",
+        "description": "Register with the Gateway (Secrets Proxy) and SxT network",
+        "operationId": "register",
+        "requestBody": {
+          "description": "The registration payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "joinCode",
+                  "password",
+                  "userId"
+                ],
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "description": "The user identifier"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The password"
+                  },
+                  "joinCode": {
+                    "type": "string",
+                    "description": "The subscription's join code"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sessionId": {
+                      "type": "string",
+                      "description": "The Gateway (Secrets Proxy) session identifier"
+                    },
+                    "sessionExpires": {
+                      "type": "integer",
+                      "description": "Gateway (Secrets Proxy) session expiry time (ms)",
+                      "format": "int64"
+                    },
+                    "accessToken": {
+                      "type": "string",
+                      "description": "Access token for use in other SxT APIs"
+                    },
+                    "refreshToken": {
+                      "type": "string",
+                      "description": "Refresh token for use in other Security APIs"
+                    },
+                    "accessTokenExpires": {
+                      "type": "integer",
+                      "description": "Access token expiry time (ms)",
+                      "format": "int64"
+                    },
+                    "refreshTokenExpires": {
+                      "type": "integer",
+                      "description": "Refresh token expiry time (ms)",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Gateway Authentication APIs"
+        ],
+        "summary": "Login",
+        "description": "Authenticate with the Gateway (Secrets Proxy) and SxT network",
+        "operationId": "login",
+        "requestBody": {
+          "description": "The authentication payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "password",
+                  "userId"
+                ],
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "description": "The user identifier"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The password"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sessionId": {
+                      "type": "string",
+                      "description": "The Gateway (Secrets Proxy) session identifier"
+                    },
+                    "sessionExpires": {
+                      "type": "integer",
+                      "description": "Gateway (Secrets Proxy) session expiry time (ms)",
+                      "format": "int64"
+                    },
+                    "accessToken": {
+                      "type": "string",
+                      "description": "Access token for use in other SxT APIs"
+                    },
+                    "refreshToken": {
+                      "type": "string",
+                      "description": "Refresh token for use in other Security APIs"
+                    },
+                    "accessTokenExpires": {
+                      "type": "integer",
+                      "description": "Access token expiry time (ms)",
+                      "format": "int64"
+                    },
+                    "refreshTokenExpires": {
+                      "type": "integer",
+                      "description": "Refresh token expiry time (ms)",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/add-existing": {
+      "post": {
+        "tags": [
+          "Gateway Authentication APIs"
+        ],
+        "summary": "Add account for existing user",
+        "description": "Take an existing user with the SxT network and add Gateway (Secrets Proxy) authentication support. A password will be automatically generated on your behalf. Use the reset password API to change it if you'd like",
+        "operationId": "add-existing-user",
+        "parameters": [
+          {
+            "name": "accessToken",
+            "in": "query",
+            "description": "The access token for authenticating with the SxT platform",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "tempPassword": {
+                      "type": "string",
+                      "description": "The temporary"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/reset": {
+      "post": {
+        "tags": [
+          "Gateway Authentication APIs"
+        ],
+        "summary": "Reset password",
+        "description": "Reset your password",
+        "operationId": "reset-password",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "header",
+            "description": "The session identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The reset password payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "newPassword",
+                  "tempPassword",
+                  "userId"
+                ],
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "description": "The user identifier"
+                  },
+                  "tempPassword": {
+                    "type": "string",
+                    "description": "The temporary password"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "description": "The new password"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/session/refresh": {
+      "post": {
+        "tags": [
+          "Gateway Authentication APIs"
+        ],
+        "summary": "Refresh session",
+        "description": "Refresh a Gateway (Secrets Proxy) authenticated session. Use this API to refresh the Secrets-Proxy specific session token",
+        "operationId": "refresh-session",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "header",
+            "description": "The session identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sessionId": {
+                      "type": "string",
+                      "description": "The Gateway (Secrets Proxy) session identifier"
+                    },
+                    "sessionExpires": {
+                      "type": "integer",
+                      "description": "Gateway (Secrets Proxy) session expiry time (ms)",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/session/convert": {
+      "post": {
+        "tags": [
+          "Gateway Authentication APIs"
+        ],
+        "summary": "Convert session",
+        "description": "Convert an authenticated session with the SxT network into an authenticated Gateway (Secrets Proxy) session",
+        "operationId": "convert-session",
+        "parameters": [
+          {
+            "name": "accessToken",
+            "in": "query",
+            "description": "The access token for authenticating with the SxT platform",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sessionId": {
+                      "type": "string",
+                      "description": "The Gateway (Secrets Proxy) session identifier"
+                    },
+                    "sessionExpires": {
+                      "type": "integer",
+                      "description": "Gateway (Secrets Proxy) session expiry time (ms)",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/apikey": {
+      "post": {
+        "tags": [
+          "Gateway Authentication APIs"
+        ],
+        "summary": "API Key Login",
+        "description": "Authenticate with the SxT network via a Gateway Proxy API Key",
+        "operationId": "apikey-authn",
+        "parameters": [
+          {
+            "name": "apikey",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                      "description": "Access token for use in other SxT APIs"
+                    },
+                    "refreshToken": {
+                      "type": "string",
+                      "description": "Refresh token for use in other Security APIs"
+                    },
+                    "accessTokenExpires": {
+                      "type": "integer",
+                      "description": "Access token expiry time (ms)",
+                      "format": "int64"
+                    },
+                    "refreshTokenExpires": {
+                      "type": "integer",
+                      "description": "Refresh token expiry time (ms)",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/biscuits": {
+      "get": {
+        "tags": [
+          "Gateway Biscuit APIs"
+        ],
+        "summary": "Get all biscuits",
+        "description": "Get all biscuits available to the user. This API returns both user-generated biscuits as well as biscuits auto-generated by the Gateway (Secrets Proxy). The response payload also includes helpful metadata including what resources a given biscuit authorizes access to as well as what operations are allowed on that resource.",
+        "operationId": "get-all-biscuits",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "header",
+            "description": "The session identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "biscuits": {
+                      "type": "array",
+                      "description": "The list of biscuits and their configured access",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "The provided name for manually uploaded biscuits (unset for auto-generated)"
+                          },
+                          "biscuit": {
+                            "type": "string",
+                            "description": "The base64 encoded biscuit payload"
+                          },
+                          "access": {
+                            "type": "array",
+                            "description": "The resource access configured in the biscuit",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "resourceId": {
+                                  "type": "string",
+                                  "description": "The resource identifier"
+                                },
+                                "supportedOperations": {
+                                  "uniqueItems": true,
+                                  "type": "array",
+                                  "description": "The list of supported operations allowed on the resource",
+                                  "items": {
+                                    "type": "string",
+                                    "description": "The list of supported operations allowed on the resource",
+                                    "enum": [
+                                      "CREATE",
+                                      "ALTER",
+                                      "DROP",
+                                      "INSERT",
+                                      "UPDATE",
+                                      "MERGE",
+                                      "DELETE",
+                                      "SELECT"
+                                    ]
+                                  }
+                                }
+                              },
+                              "description": "The resource access configured in the biscuit"
+                            }
+                          }
+                        },
+                        "description": "The list of biscuits and their configured access"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/biscuits/generated": {
+      "get": {
+        "tags": [
+          "Gateway Biscuit APIs"
+        ],
+        "summary": "Get all user biscuits",
+        "description": "Get all user generated biscuits. This API will only return biscuits manually generated and uploaded by the user.",
+        "operationId": "get-all-user-biscuits",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "header",
+            "description": "The session identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "biscuits": {
+                      "type": "array",
+                      "description": "The list of biscuits and their configured access",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "The provided name for manually uploaded biscuits (unset for auto-generated)"
+                          },
+                          "biscuit": {
+                            "type": "string",
+                            "description": "The base64 encoded biscuit payload"
+                          },
+                          "access": {
+                            "type": "array",
+                            "description": "The resource access configured in the biscuit",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "resourceId": {
+                                  "type": "string",
+                                  "description": "The resource identifier"
+                                },
+                                "supportedOperations": {
+                                  "uniqueItems": true,
+                                  "type": "array",
+                                  "description": "The list of supported operations allowed on the resource",
+                                  "items": {
+                                    "type": "string",
+                                    "description": "The list of supported operations allowed on the resource",
+                                    "enum": [
+                                      "CREATE",
+                                      "ALTER",
+                                      "DROP",
+                                      "INSERT",
+                                      "UPDATE",
+                                      "MERGE",
+                                      "DELETE",
+                                      "SELECT"
+                                    ]
+                                  }
+                                }
+                              },
+                              "description": "The resource access configured in the biscuit"
+                            }
+                          }
+                        },
+                        "description": "The list of biscuits and their configured access"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Gateway Biscuit APIs"
+        ],
+        "summary": "Add user biscuit",
+        "description": "Add a user generated biscuit. In this API, you provide a biscuit, a unique name you'd like to call this biscuit, and the public key to validate the biscuit. The Gateway (Secrets Proxy) will use this information to parse the biscuit and determine what the underlying biscuit payload enables so that it can be used going forward.",
+        "operationId": "add-user-biscuit",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "header",
+            "description": "The session identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The biscuit upload payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "biscuit",
+                  "name",
+                  "publicKey"
+                ],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The unique name for this biscuit"
+                  },
+                  "biscuit": {
+                    "type": "string",
+                    "description": "The base64 encoded biscuit payload"
+                  },
+                  "publicKey": {
+                    "type": "string",
+                    "description": "The public key associated with the biscuit"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "biscuits": {
+                      "type": "array",
+                      "description": "The list of biscuits and their configured access",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "The provided name for manually uploaded biscuits (unset for auto-generated)"
+                          },
+                          "biscuit": {
+                            "type": "string",
+                            "description": "The base64 encoded biscuit payload"
+                          },
+                          "access": {
+                            "type": "array",
+                            "description": "The resource access configured in the biscuit",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "resourceId": {
+                                  "type": "string",
+                                  "description": "The resource identifier"
+                                },
+                                "supportedOperations": {
+                                  "uniqueItems": true,
+                                  "type": "array",
+                                  "description": "The list of supported operations allowed on the resource",
+                                  "items": {
+                                    "type": "string",
+                                    "description": "The list of supported operations allowed on the resource",
+                                    "enum": [
+                                      "CREATE",
+                                      "ALTER",
+                                      "DROP",
+                                      "INSERT",
+                                      "UPDATE",
+                                      "MERGE",
+                                      "DELETE",
+                                      "SELECT"
+                                    ]
+                                  }
+                                }
+                              },
+                              "description": "The resource access configured in the biscuit"
+                            }
+                          }
+                        },
+                        "description": "The list of biscuits and their configured access"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/biscuits/generated/{biscuitName}": {
+      "get": {
+        "tags": [
+          "Gateway Biscuit APIs"
+        ],
+        "summary": "Get user biscuit by name",
+        "description": "Get a user generated biscuit by name",
+        "operationId": "get-user-biscuit-by-name",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "header",
+            "description": "The session identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "biscuitName",
+            "in": "path",
+            "description": "The biscuit name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "biscuits": {
+                      "type": "array",
+                      "description": "The list of biscuits and their configured access",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "The provided name for manually uploaded biscuits (unset for auto-generated)"
+                          },
+                          "biscuit": {
+                            "type": "string",
+                            "description": "The base64 encoded biscuit payload"
+                          },
+                          "access": {
+                            "type": "array",
+                            "description": "The resource access configured in the biscuit",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "resourceId": {
+                                  "type": "string",
+                                  "description": "The resource identifier"
+                                },
+                                "supportedOperations": {
+                                  "uniqueItems": true,
+                                  "type": "array",
+                                  "description": "The list of supported operations allowed on the resource",
+                                  "items": {
+                                    "type": "string",
+                                    "description": "The list of supported operations allowed on the resource",
+                                    "enum": [
+                                      "CREATE",
+                                      "ALTER",
+                                      "DROP",
+                                      "INSERT",
+                                      "UPDATE",
+                                      "MERGE",
+                                      "DELETE",
+                                      "SELECT"
+                                    ]
+                                  }
+                                }
+                              },
+                              "description": "The resource access configured in the biscuit"
+                            }
+                          }
+                        },
+                        "description": "The list of biscuits and their configured access"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Gateway Biscuit APIs"
+        ],
+        "summary": "Remove user biscuit",
+        "description": "Remove a user generated biscuit",
+        "operationId": "remove-user-biscuit",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "header",
+            "description": "The session identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "biscuitName",
+            "in": "path",
+            "description": "The biscuit name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "biscuits": {
+                      "type": "array",
+                      "description": "The list of biscuits and their configured access",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "The provided name for manually uploaded biscuits (unset for auto-generated)"
+                          },
+                          "biscuit": {
+                            "type": "string",
+                            "description": "The base64 encoded biscuit payload"
+                          },
+                          "access": {
+                            "type": "array",
+                            "description": "The resource access configured in the biscuit",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "resourceId": {
+                                  "type": "string",
+                                  "description": "The resource identifier"
+                                },
+                                "supportedOperations": {
+                                  "uniqueItems": true,
+                                  "type": "array",
+                                  "description": "The list of supported operations allowed on the resource",
+                                  "items": {
+                                    "type": "string",
+                                    "description": "The list of supported operations allowed on the resource",
+                                    "enum": [
+                                      "CREATE",
+                                      "ALTER",
+                                      "DROP",
+                                      "INSERT",
+                                      "UPDATE",
+                                      "MERGE",
+                                      "DELETE",
+                                      "SELECT"
+                                    ]
+                                  }
+                                }
+                              },
+                              "description": "The resource access configured in the biscuit"
+                            }
+                          }
+                        },
+                        "description": "The list of biscuits and their configured access"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/permissions": {
+      "put": {
+        "tags": [
+          "Gateway Permission APIs"
+        ],
+        "summary": "Set resource permissions",
+        "description": "Set user permissions on a given resource. NOTE: the resource must have been created via the Gateway (Secrets Proxy)",
+        "operationId": "set-permission",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "header",
+            "description": "The session identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "description": "The resource identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceType",
+            "in": "query",
+            "description": "The resource type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DB_TABLE",
+                "DB_SCHEMA"
+              ]
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "The user identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accessLevel",
+            "in": "query",
+            "description": "The access level - defines what operations a user may perform on a resource",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "READ-ONLY",
+                "READ-WRITE",
+                "CONFIGURE"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Gateway Permission APIs"
+        ],
+        "summary": "Remove permissions",
+        "description": "Remove a user's permission on a given resource. NOTE: the resource must have been created via the Gateway (Secrets Proxy)",
+        "operationId": "remove-permission",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "header",
+            "description": "The session identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "description": "The resource identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceType",
+            "in": "query",
+            "description": "The resource type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DB_TABLE",
+                "DB_SCHEMA"
+              ]
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "The user identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/permissions/user": {
+      "get": {
+        "tags": [
+          "Gateway Permission APIs"
+        ],
+        "summary": "Get user permissions",
+        "description": "Get all permissions granted to the current user",
+        "operationId": "get-user-permissions",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "header",
+            "description": "The session identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "permissions": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string",
+                        "description": "The permission map - where key is resource qualifier and value is the user's configured access level on that resource",
+                        "enum": [
+                          "READ-ONLY",
+                          "READ-WRITE",
+                          "CONFIGURE"
+                        ]
+                      },
+                      "description": "The permission map - where key is resource qualifier and value is the user's configured access level on that resource"
+                    },
+                    "identifier": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/permissions/resource": {
+      "get": {
+        "tags": [
+          "Gateway Permission APIs"
+        ],
+        "summary": "Get resource permissions",
+        "description": "Get all permissions configured on the specified resource. Note that you must have CONFIGURE level permissions on the resource for this to work.",
+        "operationId": "get-resource-permissions",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "header",
+            "description": "The session identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "description": "The resource identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceType",
+            "in": "query",
+            "description": "The resource type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DB_TABLE",
+                "DB_SCHEMA"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "qualifier": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "description": "The resource type",
+                          "enum": [
+                            "DB_TABLE",
+                            "DB_SCHEMA"
+                          ]
+                        },
+                        "id": {
+                          "type": "string",
+                          "description": "The resource identifier"
+                        }
+                      },
+                      "description": "The resource qualifier"
+                    },
+                    "permissions": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string",
+                        "description": "The permission map - where key is userId and value is their configured access level",
+                        "enum": [
+                          "READ-ONLY",
+                          "READ-WRITE",
+                          "CONFIGURE"
+                        ]
+                      },
+                      "description": "The permission map - where key is userId and value is their configured access level"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apikeys": {
+      "get": {
+        "tags": [
+          "Gateway API Key APIs"
+        ],
+        "summary": "Get all API keys",
+        "description": "Retrieve all user created API keys. Note that only the API key identifier and user-provided description will be returned. The full API key is not stored server-side for security reasons.",
+        "operationId": "get-api-keys",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "header",
+            "description": "The session identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "apiKeysMap": {
+                      "description": "The map of API keys. The key of the map is the api key identifier, and the value is the user-provided description",
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Gateway API Key APIs"
+        ],
+        "summary": "Create API key",
+        "description": "Generate a new API key. The returned string is the full API Key and is not stored server-side.",
+        "operationId": "create-api-key",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "header",
+            "description": "The session identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "description": "The API key description"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apikeys/{keyId}": {
+      "delete": {
+        "tags": [
+          "Gateway API Key APIs"
+        ],
+        "summary": "Delete an API key",
+        "description": "Delete an API key by identifier",
+        "operationId": "delete-api-key",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "header",
+            "description": "The session identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "keyId",
+            "in": "path",
+            "required": true,
+            "description": "The API key identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sql": {
+      "post": {
+        "tags": [
+          "Gateway SQL Proxy APIs"
+        ],
+        "operationId": "execute-proxy-sql-generic",
+        "summary": "Proxy Execute SQL",
+        "description": "Using this endpoint, you can execute any kind of SQL statement (DQL, DML, DDL). This API goes through the Gateway (Secrets Proxy), and unlike the [Generic SQL API](ref:execute-sql-generic) or related DQL, DML, and DDL APIs, this API will handle authentication and authorization tokens required by the SxT Network. For example, the API Key you specify in the header (created via the [API Key API](ref:create-api-key)) does not expire like the access token required in the Generic SQL API (via the bearer token `Authorization` header); instead, the Gateway manages your session with the SxT Network (reauthenticating you with the SxT Network automatically as necessary). Similarly, resources and permissions created and biscuits uploaded to the Gateway will automatically be provided to the SxT Network to authorize your request on your behalf. You can also provide biscuits manually as part of the request body and they will be forwarded to the SxT Network. The ease of getting started and usability of this API results in slightly slower performance, so if performance is critical to your application, we recommend you use the SQL APIs that go direct to the SxT Network.",
+        "parameters": [
+          {
+            "name": "apikey",
+            "in": "header",
+            "required": true,
+            "description": "The Gateway (Secrets Proxy) API key",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "originApp",
+            "in": "header",
+            "required": false,
+            "description": "The origin application of the request. This header is used to tag requests in the query log",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "sqlText"
+                ],
+                "type": "object",
+                "properties": {
+                  "sqlText": {
+                    "type": "string",
+                    "description": "The raw SQL text to execute"
+                  },
+                  "biscuits": {
+                    "type": "array",
+                    "description": "The (optional) biscuits needed to authorize the request",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sql/content-queries": {
+      "post": {
+        "tags": [
+          "Gateway SQL Proxy APIs"
+        ],
+        "operationId": "execute-proxy-sql-content-queries",
+        "summary": "Proxy Execute a content query",
+        "description": "Using this endpoint, you can execute a query created via the Content APIs. This API goes through the Gateway (Secrets Proxy), and unlike the direct to SxT Network [Execute a content query API](ref:execute-content-queries), this API will handle authentication and authorization tokens required by the SxT Network. For example, the API Key you specify in the header (created via the [API Key API](ref:create-api-key)) does not expire like the access token required in the Generic SQL API (via the bearer token `Authorization` header); instead, the Gateway manages your session with the SxT Network (reauthenticating you with the SxT Network automatically as necessary). Similarly, resources and permissions created and biscuits uploaded to the Gateway will automatically be provided to the SxT Network to authorize your request on your behalf. You can also provide biscuits manually as part of the request body and they will be forwarded to the SxT Network. The ease of getting started and usability of this API results in slightly slower performance.",
+        "parameters": [
+          {
+            "name": "apikey",
+            "in": "header",
+            "required": true,
+            "description": "The Gateway (Secrets Proxy) API key",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "originApp",
+            "in": "header",
+            "required": false,
+            "description": "The origin application of the request. This header is used to tag requests in the query log",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "queryId": {
+                    "type": "string",
+                    "description": "The query unique identifier"
+                  },
+                  "querySlug": {
+                    "type": "string",
+                    "description": "The query unique identifier"
+                  },
+                  "biscuits": {
+                    "type": "array",
+                    "description": "The (optional) biscuits needed to authorize the request",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "detail",
+                    "instance",
+                    "title",
+                    "type"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Defines the error type"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "A short summary of the problem"
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "A detailed explanation of the problem"
+                    },
+                    "instance": {
+                      "type": "string",
+                      "description": "A URI reference identifying where the problem ocurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "required": [
+          "detail",
+          "instance",
+          "title",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Defines the error type"
+          },
+          "title": {
+            "type": "string",
+            "description": "A short summary of the problem"
+          },
+          "detail": {
+            "type": "string",
+            "description": "A detailed explanation of the problem"
+          },
+          "instance": {
+            "type": "string",
+            "description": "A URI reference identifying where the problem ocurred"
+          }
+        }
+      },
+      "BiscuitUploadRequest": {
+        "required": [
+          "biscuit",
+          "name",
+          "publicKey"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The unique name for this biscuit"
+          },
+          "biscuit": {
+            "type": "string",
+            "description": "The base64 encoded biscuit payload"
+          },
+          "publicKey": {
+            "type": "string",
+            "description": "The public key associated with the biscuit"
+          }
+        }
+      },
+      "BiscuitMetadata": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The provided name for manually uploaded biscuits (unset for auto-generated)"
+          },
+          "biscuit": {
+            "type": "string",
+            "description": "The base64 encoded biscuit payload"
+          },
+          "access": {
+            "type": "array",
+            "description": "The resource access configured in the biscuit",
+            "items": {
+              "type": "object",
+              "properties": {
+                "resourceId": {
+                  "type": "string",
+                  "description": "The resource identifier"
+                },
+                "supportedOperations": {
+                  "uniqueItems": true,
+                  "type": "array",
+                  "description": "The list of supported operations allowed on the resource",
+                  "items": {
+                    "type": "string",
+                    "description": "The list of supported operations allowed on the resource",
+                    "enum": [
+                      "CREATE",
+                      "ALTER",
+                      "DROP",
+                      "INSERT",
+                      "UPDATE",
+                      "MERGE",
+                      "DELETE",
+                      "SELECT"
+                    ]
+                  }
+                }
+              },
+              "description": "The resource access configured in the biscuit"
+            }
+          }
+        },
+        "description": "The list of biscuits and their configured access"
+      },
+      "BiscuitResourceAccess": {
+        "type": "object",
+        "properties": {
+          "resourceId": {
+            "type": "string",
+            "description": "The resource identifier"
+          },
+          "supportedOperations": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "The list of supported operations allowed on the resource",
+            "items": {
+              "type": "string",
+              "description": "The list of supported operations allowed on the resource",
+              "enum": [
+                "CREATE",
+                "ALTER",
+                "DROP",
+                "INSERT",
+                "UPDATE",
+                "MERGE",
+                "DELETE",
+                "SELECT"
+              ]
+            }
+          }
+        },
+        "description": "The resource access configured in the biscuit"
+      },
+      "BiscuitResponse": {
+        "type": "object",
+        "properties": {
+          "biscuits": {
+            "type": "array",
+            "description": "The list of biscuits and their configured access",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The provided name for manually uploaded biscuits (unset for auto-generated)"
+                },
+                "biscuit": {
+                  "type": "string",
+                  "description": "The base64 encoded biscuit payload"
+                },
+                "access": {
+                  "type": "array",
+                  "description": "The resource access configured in the biscuit",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "resourceId": {
+                        "type": "string",
+                        "description": "The resource identifier"
+                      },
+                      "supportedOperations": {
+                        "uniqueItems": true,
+                        "type": "array",
+                        "description": "The list of supported operations allowed on the resource",
+                        "items": {
+                          "type": "string",
+                          "description": "The list of supported operations allowed on the resource",
+                          "enum": [
+                            "CREATE",
+                            "ALTER",
+                            "DROP",
+                            "INSERT",
+                            "UPDATE",
+                            "MERGE",
+                            "DELETE",
+                            "SELECT"
+                          ]
+                        }
+                      }
+                    },
+                    "description": "The resource access configured in the biscuit"
+                  }
+                }
+              },
+              "description": "The list of biscuits and their configured access"
+            }
+          }
+        }
+      },
+      "SessionResponse": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "description": "The Gateway (Secrets Proxy) session identifier"
+          },
+          "sessionExpires": {
+            "type": "integer",
+            "description": "Gateway (Secrets Proxy) session expiry time (ms)",
+            "format": "int64"
+          }
+        }
+      },
+      "TempPasswordResponse": {
+        "type": "object",
+        "properties": {
+          "tempPassword": {
+            "type": "string",
+            "description": "The temporary"
+          }
+        }
+      },
+      "NewPasswordRequest": {
+        "required": [
+          "newPassword",
+          "tempPassword",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "The user identifier"
+          },
+          "tempPassword": {
+            "type": "string",
+            "description": "The temporary password"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "The new password"
+          }
+        }
+      },
+      "RegisterRequest": {
+        "required": [
+          "joinCode",
+          "password",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "The user identifier"
+          },
+          "password": {
+            "type": "string",
+            "description": "The password"
+          },
+          "joinCode": {
+            "type": "string",
+            "description": "The subscription's join code"
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "description": "The Gateway (Secrets Proxy) session identifier"
+          },
+          "sessionExpires": {
+            "type": "integer",
+            "description": "Gateway (Secrets Proxy) session expiry time (ms)",
+            "format": "int64"
+          },
+          "accessToken": {
+            "type": "string",
+            "description": "Access token for use in other SxT APIs"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token for use in other Security APIs"
+          },
+          "accessTokenExpires": {
+            "type": "integer",
+            "description": "Access token expiry time (ms)",
+            "format": "int64"
+          },
+          "refreshTokenExpires": {
+            "type": "integer",
+            "description": "Refresh token expiry time (ms)",
+            "format": "int64"
+          }
+        }
+      },
+      "SimpleAuthResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "Access token for use in other SxT APIs"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token for use in other Security APIs"
+          },
+          "accessTokenExpires": {
+            "type": "integer",
+            "description": "Access token expiry time (ms)",
+            "format": "int64"
+          },
+          "refreshTokenExpires": {
+            "type": "integer",
+            "description": "Refresh token expiry time (ms)",
+            "format": "int64"
+          }
+        }
+      },
+      "AuthRequest": {
+        "required": [
+          "password",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "The user identifier"
+          },
+          "password": {
+            "type": "string",
+            "description": "The password"
+          }
+        }
+      },
+      "UserPermissionResponse": {
+        "type": "object",
+        "properties": {
+          "permissions": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "description": "The permission map - where key is resource qualifier and value is the user's configured access level on that resource",
+              "enum": [
+                "READ-ONLY",
+                "READ-WRITE",
+                "CONFIGURE"
+              ]
+            },
+            "description": "The permission map - where key is resource qualifier and value is the user's configured access level on that resource"
+          },
+          "identifier": {
+            "type": "string"
+          }
+        }
+      },
+      "ResourcePermissionResponse": {
+        "type": "object",
+        "properties": {
+          "qualifier": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "The resource type",
+                "enum": [
+                  "DB_TABLE",
+                  "DB_SCHEMA"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "description": "The resource identifier"
+              }
+            },
+            "description": "The resource qualifier"
+          },
+          "permissions": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "description": "The permission map - where key is userId and value is their configured access level",
+              "enum": [
+                "READ-ONLY",
+                "READ-WRITE",
+                "CONFIGURE"
+              ]
+            },
+            "description": "The permission map - where key is userId and value is their configured access level"
+          }
+        }
+      },
+      "ResourceQualifier": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The resource type",
+            "enum": [
+              "DB_TABLE",
+              "DB_SCHEMA"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "description": "The resource identifier"
+          }
+        },
+        "description": "The resource qualifier"
+      },
+      "ApiKeyRequest": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "The API key description"
+          }
+        }
+      },
+      "ApiKeysResponse": {
+        "type": "object",
+        "properties": {
+          "apiKeysMap": {
+            "description": "The map of API keys. The key of the map is the api key identifier, and the value is the user-provided description",
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "SqlRequest": {
+        "required": [
+          "sqlText"
+        ],
+        "type": "object",
+        "properties": {
+          "sqlText": {
+            "type": "string",
+            "description": "The raw SQL text to execute"
+          },
+          "biscuits": {
+            "type": "array",
+            "description": "The (optional) biscuits needed to authorize the request",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ContentQueryRequest": {
+        "type": "object",
+        "properties": {
+          "queryId": {
+            "type": "string",
+            "description": "The query unique identifier"
+          },
+          "querySlug": {
+            "type": "string",
+            "description": "The query unique identifier"
+          },
+          "biscuits": {
+            "type": "array",
+            "description": "The (optional) biscuits needed to authorize the request",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
