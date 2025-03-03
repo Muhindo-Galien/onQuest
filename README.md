@@ -59,5 +59,3 @@ OnQuest is a trustless on-chain reward system that verifies quest completion usi
 ## Conclusion
 
 OnQuest brings trustless quest validation to Web3, making reward systems more secure, verifiable, and resistant to manipulation. It ensures Web3 projects, DAOs, and DeFi platforms can distribute rewards fairly based on authentic user actions without relying on centralized verification services.
-
-![OnQuest Workflow](https://i.ibb.co/DPRsS8sR/Screenshot-2025-03-02-at-22-46-33.png)
